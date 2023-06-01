@@ -1,0 +1,46 @@
+import java.math.*;
+
+public class RES_Algorithm {
+	static int gcd(int publicKey_E, int totient){
+		if(publicKey_E == 0){
+			return totient;
+		}else{
+			return gcd(totient % publicKey_E, publicKey_E); //p=0  t=3 
+		}
+	}
+	
+	public static void main (String args[]){
+		int primeNum1, primeNum2, semiPrime, totient, privateKey_D=0, publicKey_E, k;
+		int myMessage = 60;
+		double cipher;
+		
+		
+		primeNum1=7;
+		primeNum2=19;
+		semiPrime = primeNum1 * primeNum2;
+		totient = (primeNum1-1)*(primeNum2-1);
+		
+		for(publicKey_E = 2; publicKey_E<totient; publicKey_E++){
+			if(gcd(publicKey_E,totient)==1){
+				break;
+			}
+		}
+		
+		for(k=0;k<=9;k++){
+			int productOfDE = 1+(k*totient);
+			if(productOfDE % publicKey_E==0){
+				privateKey_D = productOfDE/publicKey_E;
+				break;
+			}
+		}
+		
+		cipher = (Math.pow(myMessage, publicKey_E)) % semiPrime;
+		System.out.println("Encrypted Message is "+cipher);
+		BigInteger N = BigInteger.valueOf(semiPrime);
+		BigInteger myCipher = BigDecimal.valueOf(cipher).toBigInteger();
+		BigInteger myDecryptedMessage = (myCipher.pow(privateKey_D)).mod(N);
+		System.out.println("Decrypted Message is "+myDecryptedMessage);
+			
+		
+	}
+}
